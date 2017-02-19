@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.URL;
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 //check if search bar is null or not
                 //if search bar is null then send a error message
                 if (searchBar.getText().toString().trim().equals("")) {
-                    searchBar.setError(getString(R.string.fill_in_search_bar));
+                    mEmptyView.setText(getString(R.string.fill_in_search_bar));
                 } else {
 
                     mProcessBar = findViewById(R.id.process_bar);
@@ -100,10 +101,9 @@ public class MainActivity extends AppCompatActivity {
                     if (searchBar.getText().toString().trim().equals("")) {
                         //if edit text is null
                         //display an error message
-                        searchBar.setError(getString(R.string.fill_in_search_bar));
+                        mEmptyView.setText(R.string.fill_in_search_bar);
                     } else {
                         mEmptyView.setText(R.string.no_data_found);
-
                     }
 
                     if (networkInfo != null && networkInfo.isConnected()) {
@@ -114,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
                         mProcessBar.setVisibility(View.GONE);
                         //set empty state to message no connection
                         mEmptyView.setText(R.string.no_connection);
+                        Toast toast = Toast.makeText(MainActivity.this, R.string.no_connection, Toast.LENGTH_SHORT);
+                        toast.show();
                     }
                 }
             }
@@ -144,13 +146,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected List<BookDetails> doInBackground(URL... urls) {
             //create URL object
-            URL url = QueryUtils.createUrl(BOOK_REQUEST_URL + userInput + "&maxresults=10");
-
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            URL url = QueryUtils.createUrl(BOOK_REQUEST_URL + userInput + "&maxResults=10");
 
             //perform a HTTP request to the URL and receive the JSON response
             String jsonResponse = "";

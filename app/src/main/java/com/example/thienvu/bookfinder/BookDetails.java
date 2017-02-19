@@ -1,12 +1,10 @@
 package com.example.thienvu.bookfinder;
 
-import android.os.Parcel;
-
 /**
  * Created by thienvu on 2/13/17.
  */
 
-public class BookDetails{
+public class BookDetails {
     //variable for book
     private String mTitle;
     private String mAuthor;
@@ -33,10 +31,5 @@ public class BookDetails{
      */
     public String getmAuthor() {
         return mAuthor;
-    }
-
-    protected BookDetails(Parcel in) {
-        mTitle = in.readString();
-        mAuthor = in.readString();
     }
 }

@@ -2,6 +2,6 @@
     <string name="app_name">Book Finder</string>
     <string name="loading_indicator">Warning: there is no internet connection</string>
     <string name="no_data_found">Opps Sorry cannot find your book</string>
-    <string name="fill_in_search_bar">Please enter a title or author to continue</string>
+    <string name="fill_in_search_bar">Please enter a title or author for searching</string>
     <string name="no_connection">Warning: No internet connection</string>
 </resources>
