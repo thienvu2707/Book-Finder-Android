@@ -1,40 +1,42 @@
 package com.example.thienvu.bookfinder;
 
+import android.os.Parcel;
+
 /**
  * Created by thienvu on 2/13/17.
  */
 
-public class BookDetails {
+public class BookDetails{
     //variable for book
     private String mTitle;
-//    private String mUrl;
+    private String mAuthor;
 
     /**
      * Constructor for book details
      */
-    public BookDetails(String title)
-    {
+    public BookDetails(String title, String author) {
         mTitle = title;
-//        mUrl = url;
+        mAuthor = author;
     }
 
     /**
      * Get the title fo the book
      */
-    public String getmTitle()
-    {
+    public String getmTitle() {
         return mTitle;
     }
 
     /**
-     * get the url of the book
+     * get authors of the book
+     *
      * @return
      */
-//    public String getmUrl()
-//    {
-//        return mUrl;
-//    }
+    public String getmAuthor() {
+        return mAuthor;
+    }
 
-
-
+    protected BookDetails(Parcel in) {
+        mTitle = in.readString();
+        mAuthor = in.readString();
+    }
 }

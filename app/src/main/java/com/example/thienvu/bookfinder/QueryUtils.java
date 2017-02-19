@@ -15,6 +15,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by thienvu on 2/15/17.
@@ -24,31 +26,6 @@ public final class QueryUtils {
 
     //Tag for the log message
     public static final String LOG_TAG = QueryUtils.class.getName();
-
-    /**
-     * Query to get information from internet then return BookDetail
-     * @param requestUrl
-     * @return
-     */
-    public static BookDetails fetchBookData (String requestUrl)
-    {
-        //create URL object
-        URL url = createUrl(requestUrl);
-
-        //perform a HTTP request to url and receive a JSON response
-        String jsonResponse = null;
-        //try to make a HTTP request
-        try {
-            jsonResponse = makeHttpRequest(url);
-        } catch (IOException e)
-        {
-            Log.e(LOG_TAG, "Error cannot make http request", e);
-        }
-
-        //Extract Json response return title of the book and create title book object
-        BookDetails title = extractFromJson(jsonResponse);
-        return title;
-    }
 
     /**
      * Create to return the url from the give String url
@@ -68,6 +45,7 @@ public final class QueryUtils {
 
     /**
      * This is how we make HTTP request from URL and we return the response
+     *
      * @param url
      * @return
      * @throws IOException
@@ -126,17 +104,16 @@ public final class QueryUtils {
     /**
      * Convert input stream from server into String which contain JSON response
      * we need to read from
+     *
      * @param inputStream
      * @return
      * @throws IOException
      */
-    private static String readFromStream(InputStream inputStream) throws IOException
-    {
+    private static String readFromStream(InputStream inputStream) throws IOException {
         //create a StringBuilder to read from stream
         StringBuilder output = new StringBuilder();
         //check if the input stream is null or not
-        if (inputStream != null)
-        {
+        if (inputStream != null) {
             //if input stream is not null
             //1st we create a stream reader to read from character utf-8
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
@@ -144,8 +121,7 @@ public final class QueryUtils {
             BufferedReader reader = new BufferedReader(inputStreamReader);
             //now we read from url line by line
             String line = reader.readLine();
-            while (line !=null)
-            {
+            while (line != null) {
                 //add more line to read
                 output.append(line);
                 line = reader.readLine();
@@ -154,38 +130,41 @@ public final class QueryUtils {
         return output.toString();
     }
 
-    public static BookDetails extractFromJson (String bookJson)
-    {
+    /**
+     * go to get JSON response from api
+     *
+     * @param bookJson
+     * @return
+     */
+    public static List<BookDetails> extractFromJson(String bookJson) {
         //if the json is empty then i must return immediately
         if (TextUtils.isEmpty(bookJson))
             return null;
 
-        //trying to parse JSON
+        ArrayList<BookDetails> book = new ArrayList<>();
+
         try {
-            //1st create new root of Json
             JSONObject root = new JSONObject(bookJson);
+            JSONArray item = root.getJSONArray("items");
 
-            //then get JSON array in the root
-            JSONArray items = root.getJSONArray("items");
-
-            //check if there an result for what you search
-            if (items.length() > 0)
-            {
-                //extract out the first title searching for book
-                JSONObject firstItem = items.getJSONObject(0);
-                JSONObject volumeInfo = firstItem.getJSONObject("volumeInfo");
-
-                //Extract out the title of the book
+            if (item.length() > 0) ;
+            for (int i = 0; i < item.length(); i++) {
+                JSONObject volumeInfo = item.getJSONObject(i).getJSONObject("volumeInfo");
                 String title = volumeInfo.getString("title");
+                String authors = volumeInfo.getString("authors");
 
-                //final we create new object for Book
-                return new BookDetails(title);
+                while (authors.contains("\"") || authors.contains("[") || authors.contains("]")) {
+                    authors = authors.replace("\"", "");
+                    authors = authors.replace("[", "");
+                    authors = authors.replace("]", "");
+                }
+
+                BookDetails books = new BookDetails(title, authors);
+                book.add(books);
             }
-        } catch (JSONException e)
-        {
-            Log.e(LOG_TAG, "Problem parsing the Json result", e);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "proplem parsing the book JSON result", e);
         }
-        return null;
+        return book;
     }
-
 }
