@@ -26,6 +26,8 @@ public final class QueryUtils {
 
     //Tag for the log message
     public static final String LOG_TAG = QueryUtils.class.getName();
+    private static final int TIMEOUT = 10000;
+    private static final int RESPONSE_CODE_OK = 200;
 
     /**
      * Create to return the url from the give String url
@@ -69,8 +71,8 @@ public final class QueryUtils {
         try {
             //1st we open a connection to server
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setReadTimeout(10000);
-            urlConnection.setConnectTimeout(10000);
+            urlConnection.setReadTimeout(TIMEOUT);
+            urlConnection.setConnectTimeout(TIMEOUT);
             //use method GET to download from url
             urlConnection.setRequestMethod("GET");
 
@@ -78,7 +80,7 @@ public final class QueryUtils {
             urlConnection.connect();
 
             //check if the response code is OK or not
-            if (urlConnection.getResponseCode() == 200) {
+            if (urlConnection.getResponseCode() == RESPONSE_CODE_OK) {
                 //if ok then get the input stream
                 inputStream = urlConnection.getInputStream();
                 //we need json to read from the input stream
