@@ -101,6 +101,9 @@ public class MainActivity extends AppCompatActivity {
                         //if edit text is null
                         //display an error message
                         searchBar.setError(getString(R.string.fill_in_search_bar));
+                    } else {
+                        mEmptyView.setText(R.string.no_data_found);
+
                     }
 
                     if (networkInfo != null && networkInfo.isConnected()) {
